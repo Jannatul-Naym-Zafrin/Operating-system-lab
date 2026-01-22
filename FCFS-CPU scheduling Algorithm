@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+struct Process {
+    int pid;
+    int burstTime;
+    int waitingTime;
+    int turnAroundTime;
+};
+
+void calculateWaitingTime(Process p[], int n) {
+    p[0].waitingTime = 0;
+    for (int i = 1; i < n; i++) {
+        p[i].waitingTime = p[i - 1].waitingTime + p[i - 1].burstTime;
+    }
+}
+
+void calculateTurnAroundTime(Process p[], int n) {
+    for (int i = 0; i < n; i++) {
+        p[i].turnAroundTime = p[i].burstTime + p[i].waitingTime;
+    }
+}
+
+void printAverageTimes(Process p[], int n) {
+    float totalWaitingTime = 0, totalTurnAroundTime = 0;
+
+    calculateWaitingTime(p, n);
+    calculateTurnAroundTime(p, n);
+
+    cout << "\nProcess\tBurst Time\tWaiting Time\tTurnaround Time\n";
+
+    for (int i = 0; i < n; i++) {
+        totalWaitingTime += p[i].waitingTime;
+        totalTurnAroundTime += p[i].turnAroundTime;
+
+        cout << "P" << p[i].pid << "\t"
+             << p[i].burstTime << "\t\t"
+             << p[i].waitingTime << "\t\t"
+             << p[i].turnAroundTime << endl;
+    }
+
+    cout << "\nAverage Waiting Time: "
+         << totalWaitingTime / n;
+    cout << "\nAverage Turnaround Time: "
+         << totalTurnAroundTime / n << endl;
+}
+
+int main() {
+    int n;
+    cout << "Enter number of processes: ";
+    cin >> n;
+
+    Process p[n];
+    for (int i = 0; i < n; i++) {
+        p[i].pid = i + 1;
+        cout << "Enter burst time for Process " << p[i].pid << ": ";
+        cin >> p[i].burstTime;
+    }
+
+    printAverageTimes(p, n);
+    return 0;
+}
